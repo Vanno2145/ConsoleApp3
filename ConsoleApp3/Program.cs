@@ -1,87 +1,303 @@
 ﻿namespace ConsoleApp2
 {
 
-    public class WebC
+    public class Matrix
     {
-        private string name;
-        public string path;
-        public string url;
-        public string describe;
+        private int[,] matrix;
 
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public string Url { get; set; }
-        public string Describe { get; set; }
-
-        public override string ToString()
+        public Matrix(int rows, int columns)
         {
-            return $"Name: {name}\n Path: {path}\n Url: {url}\n Describe: {describe}\n";
+            matrix = new int[rows, columns];
         }
 
-        public void Input(string name, string path, string url, string describe)
+        public int Rows { get { return matrix.GetLength(0); } }
+        public int Columns { get { return matrix.GetLength(1); } }
+
+        public int this[int row, int col]
         {
-            this.name = name;
-            this.path = path;
-            this.url = url;
-            this.describe = describe;
+            get { return matrix[row, col]; }
+            set { matrix[row, col] = value; }
+        }
+
+        public void Input()
+        {
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    Console.Write("Введите элемент [{0},{1}]: ", i, j);
+                    matrix[i, j] = int.Parse(Console.ReadLine());
+                }
+            }
+        }
+        public void PrintMatrix()
+        {
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    Console.Write("{0}\t", matrix[i, j]);
+                }
+                Console.WriteLine();
+            }
+        }
+        public int FindMaxElement()
+        {
+            int max = matrix[0, 0];
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    if (matrix[i, j] > max)
+                    {
+                        max = matrix[i, j];
+                    }
+                }
+            }
+            return max;
+        }
+        public int FindMinElement()
+        {
+            int min = matrix[0, 0];
+            for (int i = 0; i < Rows; i++)
+            {
+                for (int j = 0; j < Columns; j++)
+                {
+                    if (matrix[i, j] < min)
+                    {
+                        min = matrix[i, j];
+                    }
+                }
+            }
+            return min;
+        }
+
+        public static Matrix operator +(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+            {
+                throw new ArgumentException("Размеры матриц должны быть одинаковыми");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] + b[i, j];
+                }
+            }
+            return result;
+        }
+        public static string operator ==(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+            {
+                throw new ArgumentException("Матрицы разных размеров");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+            int c = -1;
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    if (a[i, j] == b[i, j])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        c = 1;
+                        throw new ArgumentException("Матрицы разные");
+                    }
+                }
+            }
+
+            if (c == -1)
+            {
+                return "Матрицы равны";
+            }
+            else
+            {
+                throw new ArgumentException("Матрицы разные");
+            }
+
+        }
+        public static string operator !=(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+            {
+                Console.WriteLine("Матрицы разных размеров");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+            int c = -1;
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    if (a[i, j] == b[i, j])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        c = 1;
+                        throw new ArgumentException("Матрицы разные");
+                    }
+                }
+            }
+
+            if (c == -1)
+            {
+                return "Матрицы равны";
+            }
+            else
+            {
+                throw new ArgumentException("Матрицы разные");
+            }
+        }
+        public static Matrix operator -(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+            {
+                throw new ArgumentException("Компоненты матрицы должны иметь одинаковые размеры");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] - b[i, j];
+                }
+            }
+            return result;
+        }
+        public static Matrix operator *(Matrix a, Matrix b)
+        {
+            if (a.Rows != b.Rows || a.Columns != b.Columns)
+            {
+                throw new ArgumentException("Компоненты матрицы должны иметь одинаковые размеры");
+            }
+
+            Matrix result = new Matrix(a.Rows, a.Columns);
+            for (int i = 0; i < a.Rows; i++)
+            {
+                for (int j = 0; j < a.Columns; j++)
+                {
+                    result[i, j] = a[i, j] * b[i, j];
+                }
+            }
+            return result;
         }
     }
 
-    public class Journal
+    public class Book
     {
-        private string title;
-        public int yearOfFoundation;
-        public string description;
-        public string contactPhone;
-        public string contactEmail;
-
         public string Title { get; set; }
-        public int YearOfFoundation { get; set; }
-        public string Description { get; set; }
-        public string ContactPhone { get; set; }
-        public string ContactEmail { get; set; }
+        public string Author { get; set; }
+
+        public Book(string title, string author)
+        {
+            Title = title;
+            Author = author;
+        }
 
         public override string ToString()
         {
-            return $"Title: {title}\n Year of Foundation: {yearOfFoundation}\n Description: {description}\n Contact Phone: {contactPhone}\n Contact Email: {contactEmail}\n";
-        }
-
-        public void Input(string title, int yearOfFoundation, string description, string contactPhone, string contactEmail)
-        {
-            this.title = title;
-            this.yearOfFoundation = yearOfFoundation;
-            this.description = description;
-            this.contactPhone = contactPhone;
-            this.contactEmail = contactEmail;
+            return $"{Title} by {Author}";
         }
     }
 
-    public class Store
+    
+    public class ReadingList
     {
-        private string storeName;
-        public string address;
-        public string storeProfile;
-        public string contactPhone;
-        public string contactEmail;
+        private Book[] books;     
+        private int count = 0;    
 
-        public string StoreName { get; set; }
-        public string Address { get; set; }
-        public string StoreProfile { get; set; }
-        public string ContactPhone { get; set; }
-        public string ContactEmail { get; set; }
-
-        public override string ToString()
+        public ReadingList(int capacity)
         {
-            return $"Store Name: {storeName}\n Address: {address}\n Store Profile: {storeProfile}\n Contact Phone: {contactPhone}\n Contact Email: {contactEmail}\n";
+            books = new Book[capacity];
         }
 
-        public void Input(string storeName, string address, string storeProfile, string contactPhone, string contactEmail)
+        
+        public static ReadingList operator +(ReadingList readingList, Book book)
         {
-            this.storeName = storeName;
-            this.address = address;
-            this.storeProfile = storeProfile;
-            this.contactPhone = contactPhone;
-            this.contactEmail = contactEmail;
+            if (readingList.count < readingList.books.Length)
+            {
+                readingList.books[readingList.count] = book;
+                readingList.count++;
+                Console.WriteLine($"'{book.Title}' добавлена в список.");
+            }
+            else
+            {
+                Console.WriteLine("Список заполнен. Невозможно добавить новую книгу.");
+            }
+            return readingList;
+        }
+
+        
+        public static ReadingList operator -(ReadingList readingList, Book book)
+        {
+            int index = -1;
+
+           
+            for (int i = 0; i < readingList.count; i++)
+            {
+                if (readingList.books[i] == book)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index == -1)
+            {
+                Console.WriteLine($"'{book.Title}' нет в списке.");
+            }
+            else
+            {
+                
+                for (int i = index; i < readingList.count - 1; i++)
+                {
+                    readingList.books[i] = readingList.books[i + 1];
+                }
+
+                readingList.books[readingList.count - 1] = null; 
+                readingList.count--;
+                Console.WriteLine($"'{book.Title}' удалена из списка.");
+            }
+
+            return readingList;
+        }
+
+        
+        public bool ContainsBook(Book book)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (books[i] == book)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        
+        public void DisplayBooks()
+        {
+            Console.WriteLine("Список книг для прочтения:");
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine(books[i]);
+            }
+            if (count == 0)
+            {
+                Console.WriteLine("Список пуст.");
+            }
         }
     }
 
